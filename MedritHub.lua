@@ -1,6 +1,8 @@
--- ========================================================
--- MEDRIT HUB (AYUWOKI EDITION) v2.0 — ELITE DESIGN
--- ========================================================
+--[[
+    Project: Medrit Hub Elite (Rainbow Edition)
+    Features: Rainbow Glow, ESP (Monster, Players, Items), Auto TP (200 Studs), 
+              Noclip, Fast Pickup, Fullbright, Sky Platform, Infinite Jump, Anti-Slow.
+]]
 
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
@@ -12,27 +14,23 @@ local TweenService = game:GetService("TweenService")
 
 local LocalPlayer = Players.LocalPlayer
 
--- Чистим старый UI
 if CoreGui:FindFirstChild("MedritHubElite") then
     CoreGui.MedritHubElite:Destroy()
 end
 
--- --------------------------------------------------------
--- 1. ЭЛИТНЫЙ ИНТЕРФЕЙС (UI SETUP)
--- --------------------------------------------------------
 local ScreenGui = Instance.new("ScreenGui")
 ScreenGui.Name = "MedritHubElite"
 ScreenGui.Parent = CoreGui
 ScreenGui.ResetOnSpawn = false
 
--- Кнопка открытия (Неоновая плашка сверху)
+-- Главная кнопка открытия/закрытия меню
 local OpenBtn = Instance.new("TextButton")
 OpenBtn.Name = "OpenButton"
 OpenBtn.Parent = ScreenGui
 OpenBtn.Position = UDim2.new(0.5, -75, 0, 12)
 OpenBtn.Size = UDim2.new(0, 150, 0, 32)
 OpenBtn.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
-OpenBtn.Text = "⚡ MEDRIT HUB"
+OpenBtn.Text = "MEDRIT HUB"
 OpenBtn.TextColor3 = Color3.fromRGB(255, 60, 60)
 OpenBtn.TextSize = 13
 OpenBtn.Font = Enum.Font.GothamBold
@@ -46,19 +44,18 @@ OpenStroke.Color = Color3.fromRGB(220, 30, 30)
 OpenStroke.Thickness = 1.5
 OpenStroke.Parent = OpenBtn
 
--- Главное окно
+-- Окно интерфейса
 local MainFrame = Instance.new("Frame")
 MainFrame.Name = "MainFrame"
 MainFrame.Parent = ScreenGui
-MainFrame.Position = UDim2.new(0.5, -135, 0.5, -180)
-MainFrame.Size = UDim2.new(0, 270, 0, 360)
+MainFrame.Position = UDim2.new(0.5, -150, 0.5, -220)
+MainFrame.Size = UDim2.new(0, 300, 0, 440)
 MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 15)
 MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.ClipsDescendants = true
 
 local MainCorner = Instance.new("UICorner")
-MainCorner.CornerRadius = UDim.new(0, 12)
 MainCorner.CornerRadius = UDim.new(0, 12)
 MainCorner.Parent = MainFrame
 
@@ -67,7 +64,6 @@ MainStroke.Color = Color3.fromRGB(220, 30, 30)
 MainStroke.Thickness = 2
 MainStroke.Parent = MainFrame
 
--- Шапка окна (Drag Area)
 local TopBar = Instance.new("Frame")
 TopBar.Parent = MainFrame
 TopBar.Size = UDim2.new(1, 0, 0, 40)
@@ -78,32 +74,23 @@ local TopCorner = Instance.new("UICorner")
 TopCorner.CornerRadius = UDim.new(0, 12)
 TopCorner.Parent = TopBar
 
--- Чтобы углы сверху не были квадратными
-local FixTop = Instance.new("Frame")
-FixTop.Parent = TopBar
-FixTop.Position = UDim2.new(0, 0, 0.5, 0)
-FixTop.Size = UDim2.new(1, 0, 0.5, 0)
-FixTop.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
-FixTop.BorderSizePixel = 0
-
 local Title = Instance.new("TextLabel")
 Title.Parent = TopBar
 Title.Position = UDim2.new(0, 15, 0, 0)
 Title.Size = UDim2.new(1, -50, 1, 0)
 Title.BackgroundTransparency = 1
-Title.Text = "MEDRIT HUB v2.0"
+Title.Text = "MEDRIT HUB ULTIMATE"
 Title.TextColor3 = Color3.fromRGB(255, 255, 255)
 Title.TextSize = 14
 Title.Font = Enum.Font.GothamBold
 Title.TextXAlignment = Enum.TextXAlignment.Left
 
--- Крутая кнопка закрытия [X]
 local CloseBtn = Instance.new("TextButton")
 CloseBtn.Parent = TopBar
 CloseBtn.Position = UDim2.new(1, -35, 0.5, -12)
 CloseBtn.Size = UDim2.new(0, 24, 0, 24)
 CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
-CloseBtn.Text = "✕"
+CloseBtn.Text = "X"
 CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
 CloseBtn.TextSize = 12
 CloseBtn.Font = Enum.Font.GothamBold
@@ -112,25 +99,22 @@ local CloseCorner = Instance.new("UICorner")
 CloseCorner.CornerRadius = UDim.new(0, 6)
 CloseCorner.Parent = CloseBtn
 
--- Контейнер для тугглов
 local Container = Instance.new("ScrollingFrame")
 Container.Parent = MainFrame
 Container.Position = UDim2.new(0, 10, 0, 50)
 Container.Size = UDim2.new(1, -20, 1, -60)
 Container.BackgroundTransparency = 1
 Container.BorderSizePixel = 0
-Container.CanvasSize = UDim2.new(0, 0, 0, 310)
+Container.CanvasSize = UDim2.new(0, 0, 0, 1150)
 Container.ScrollBarThickness = 3
 Container.ScrollBarImageColor3 = Color3.fromRGB(200, 30, 30)
 
 local UIList = Instance.new("UIListLayout")
 UIList.Parent = Container
 UIList.SortOrder = Enum.SortOrder.LayoutOrder
-UIList.Padding = UDim.new(0, 10)
+UIList.Padding = UDim.new(0, 8)
 
--- --------------------------------------------------------
--- 2. МЕХАНИКА ПЕРЕТАСКИВАНИЯ (DRAGGABLE)
--- --------------------------------------------------------
+-- Драг менюшки
 local dragging, dragInput, dragStart, startPos
 TopBar.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
@@ -159,15 +143,23 @@ end)
 OpenBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
 CloseBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false end)
 
--- --------------------------------------------------------
--- 3. КРАСИВЫЕ КНОПКИ-ПЕРЕКЛЮЧАТЕЛИ (TOGGLES)
--- --------------------------------------------------------
+local function CreateSection(titleText)
+    local SecLabel = Instance.new("TextLabel")
+    SecLabel.Parent = Container
+    SecLabel.Size = UDim2.new(1, 0, 0, 25)
+    SecLabel.BackgroundTransparency = 1
+    SecLabel.Text = "  " .. titleText
+    SecLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
+    SecLabel.TextSize = 12
+    SecLabel.Font = Enum.Font.GothamBold
+    SecLabel.TextXAlignment = Enum.TextXAlignment.Left
+end
+
 local function CreateToggle(name, callback)
     local state = false
-    
     local ToggleBtn = Instance.new("TextButton")
     ToggleBtn.Parent = Container
-    ToggleBtn.Size = UDim2.new(1, 0, 0, 42)
+    ToggleBtn.Size = UDim2.new(1, 0, 0, 38)
     ToggleBtn.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
     ToggleBtn.AutoButtonColor = false
     ToggleBtn.Text = ""
@@ -183,20 +175,19 @@ local function CreateToggle(name, callback)
 
     local Label = Instance.new("TextLabel")
     Label.Parent = ToggleBtn
-    Label.Position = UDim2.new(0, 15, 0, 0)
-    Label.Size = UDim2.new(1, -70, 1, 0)
+    Label.Position = UDim2.new(0, 12, 0, 0)
+    Label.Size = UDim2.new(1, -60, 1, 0)
     Label.BackgroundTransparency = 1
     Label.Text = name
     Label.TextColor3 = Color3.fromRGB(200, 200, 200)
-    Label.TextSize = 13
+    Label.TextSize = 12
     Label.Font = Enum.Font.GothamMedium
     Label.TextXAlignment = Enum.TextXAlignment.Left
 
-    -- Статус бэдж (ON / OFF)
     local StatusBadge = Instance.new("Frame")
     StatusBadge.Parent = ToggleBtn
-    StatusBadge.Position = UDim2.new(1, -55, 0.5, -12)
-    StatusBadge.Size = UDim2.new(0, 42, 0, 24)
+    StatusBadge.Position = UDim2.new(1, -50, 0.5, -10)
+    StatusBadge.Size = UDim2.new(0, 38, 0, 20)
     StatusBadge.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
 
     local SCorner = Instance.new("UICorner")
@@ -209,13 +200,11 @@ local function CreateToggle(name, callback)
     StatusText.BackgroundTransparency = 1
     StatusText.Text = "OFF"
     StatusText.TextColor3 = Color3.fromRGB(120, 120, 120)
-    StatusText.TextSize = 11
+    StatusText.TextSize = 10
     StatusText.Font = Enum.Font.GothamBold
 
     ToggleBtn.MouseButton1Click:Connect(function()
         state = not state
-        
-        -- Плавная анимация клика и смены цвета
         local targetColor = state and Color3.fromRGB(220, 30, 30) or Color3.fromRGB(30, 30, 38)
         local textColor = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(120, 120, 120)
         local strokeColor = state and Color3.fromRGB(255, 60, 60) or Color3.fromRGB(40, 40, 50)
@@ -231,51 +220,235 @@ local function CreateToggle(name, callback)
     end)
 end
 
--- --------------------------------------------------------
--- 4. ФУНКЦИОНАЛ ЧИТОВ
--- --------------------------------------------------------
+local function CreateTextBoxInput(name, defaultVal, callback)
+    local FrameBox = Instance.new("Frame")
+    FrameBox.Parent = Container
+    FrameBox.Size = UDim2.new(1, 0, 0, 38)
+    FrameBox.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
 
--- [1] ESP Ayuwoki
+    local FCorner = Instance.new("UICorner")
+    FCorner.CornerRadius = UDim.new(0, 8)
+    FCorner.Parent = FrameBox
+
+    local FStroke = Instance.new("UIStroke")
+    FStroke.Color = Color3.fromRGB(40, 40, 50)
+    FStroke.Thickness = 1
+    FStroke.Parent = FrameBox
+
+    local Label = Instance.new("TextLabel")
+    Label.Parent = FrameBox
+    Label.Position = UDim2.new(0, 12, 0, 0)
+    Label.Size = UDim2.new(1, -80, 1, 0)
+    Label.BackgroundTransparency = 1
+    Label.Text = name
+    Label.TextColor3 = Color3.fromRGB(200, 200, 200)
+    Label.TextSize = 12
+    Label.Font = Enum.Font.GothamMedium
+    Label.TextXAlignment = Enum.TextXAlignment.Left
+
+    local TextBox = Instance.new("TextBox")
+    TextBox.Parent = FrameBox
+    TextBox.Position = UDim2.new(1, -70, 0.5, -12)
+    TextBox.Size = UDim2.new(0, 60, 0, 24)
+    TextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
+    TextBox.Text = tostring(defaultVal)
+    TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TextBox.TextSize = 12
+    TextBox.Font = Enum.Font.GothamBold
+    TextBox.ClearTextOnFocus = false
+
+    local TBCorner = Instance.new("UICorner")
+    TBCorner.CornerRadius = UDim.new(0, 6)
+    TBCorner.Parent = TextBox
+
+    TextBox.FocusLost:Connect(function()
+        local num = tonumber(TextBox.Text)
+        if num then callback(num) else TextBox.Text = tostring(defaultVal) end
+    end)
+end
+
+-- ==================== RAINBOW GLOW LOGIC ====================
+local rainbowGlow = false
+
+RunService.RenderStepped:Connect(function()
+    if rainbowGlow then
+        local hue = (tick() % 5) / 5
+        local rainbowColor = Color3.fromHSV(hue, 1, 1)
+        
+        MainStroke.Color = rainbowColor
+        OpenStroke.Color = rainbowColor
+        OpenBtn.TextColor3 = rainbowColor
+    end
+end)
+
+-- ==================== ESP AND TRACKING ====================
+CreateSection("ESP AND TRACKING")
+
 local ayuwokiESP = false
-local monsterHighlights = {}
+local monsterData = {}
+local autoTP = false
+local tpCooldown = false
 
 CreateToggle("ESP Ayuwoki", function(val)
     ayuwokiESP = val
     if not ayuwokiESP then
-        for _, hl in pairs(monsterHighlights) do if hl then hl:Destroy() end end
-        monsterHighlights = {}
+        for _, data in pairs(monsterData) do
+            if data.Highlight then data.Highlight:Destroy() end
+            if data.Billboard then data.Billboard:Destroy() end
+        end
+        monsterData = {}
+    end
+end)
+
+CreateToggle("Auto TP From Ayuwoki (200 Studs)", function(val) autoTP = val end)
+
+local playersESP = false
+local playersData = {}
+
+CreateToggle("ESP Player", function(val)
+    playersESP = val
+    if not playersESP then
+        for _, data in pairs(playersData) do
+            if data.Highlight then data.Highlight:Destroy() end
+            if data.Billboard then data.Billboard:Destroy() end
+        end
+        playersData = {}
     end
 end)
 
 RunService.RenderStepped:Connect(function()
-    if ayuwokiESP then
-        for _, obj in pairs(Workspace:GetChildren()) do
-            if obj:FindFirstChildOfClass("Humanoid") and not Players:GetPlayerFromCharacter(obj) then
-                if not monsterHighlights[obj] then
+    if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
+    local myHrp = LocalPlayer.Character.HumanoidRootPart
+    local myPos = myHrp.Position
+
+    for _, obj in pairs(Workspace:GetChildren()) do
+        if obj:FindFirstChildOfClass("Humanoid") and not Players:GetPlayerFromCharacter(obj) then
+            local monsterPart = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildOfClass("BasePart")
+            if monsterPart then
+                local dist = math.floor((myPos - monsterPart.Position).Magnitude)
+
+                if autoTP and dist <= 200 and not tpCooldown then
+                    tpCooldown = true
+                    local cam = Workspace.CurrentCamera
+                    local lookVec = cam.CFrame.LookVector
+                    local flatVector = Vector3.new(lookVec.X, 0, lookVec.Z).Unit
+                    
+                    local newPos = myHrp.Position - (flatVector * 180)
+                    myHrp.CFrame = CFrame.new(newPos + Vector3.new(0, 5, 0))
+                    myHrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
+                    
+                    task.delay(1.5, function() tpCooldown = false end)
+                end
+
+                if ayuwokiESP then
+                    if not monsterData[obj] then
+                        local hl = Instance.new("Highlight")
+                        hl.Parent = ScreenGui
+                        hl.Adornee = obj
+                        hl.FillTransparency = 0.4
+                        
+                        local bb = Instance.new("BillboardGui")
+                        bb.Parent = ScreenGui
+                        bb.Adornee = monsterPart
+                        bb.Size = UDim2.new(0, 180, 0, 40)
+                        bb.AlwaysOnTop = true
+
+                        local lbl = Instance.new("TextLabel")
+                        lbl.Parent = bb
+                        lbl.Size = UDim2.new(1, 0, 1, 0)
+                        lbl.BackgroundTransparency = 1
+                        lbl.TextSize = 13
+                        lbl.Font = Enum.Font.GothamBold
+
+                        monsterData[obj] = {Highlight = hl, Billboard = bb, Label = lbl, LastDist = dist}
+                    end
+
+                    local data = monsterData[obj]
+                    local isDangerZone = (dist <= 60)
+
+                    if isDangerZone then
+                        data.Highlight.FillColor = Color3.fromRGB(255, 0, 60)
+                        data.Highlight.OutlineColor = Color3.fromRGB(255, 230, 0)
+                        data.Label.Text = "DANGER! " .. dist .. "m"
+                        data.Label.TextColor3 = Color3.fromRGB(255, 40, 40)
+                    else
+                        data.Highlight.FillColor = Color3.fromRGB(255, 0, 0)
+                        data.Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                        data.Label.Text = "Ayuwoki " .. dist .. "m"
+                        data.Label.TextColor3 = Color3.fromRGB(255, 170, 0)
+                    end
+                    data.LastDist = dist
+                end
+            end
+        end
+    end
+
+    if playersESP then
+        for _, p in pairs(Players:GetPlayers()) do
+            if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
+                local pChar = p.Character
+                local pPart = pChar.HumanoidRootPart
+                local dist = math.floor((myPos - pPart.Position).Magnitude)
+
+                if not playersData[p] then
                     local hl = Instance.new("Highlight")
-                    hl.Parent = obj
-                    hl.FillColor = Color3.fromRGB(255, 0, 0)
+                    hl.Parent = ScreenGui
+                    hl.Adornee = pChar
+                    hl.FillColor = Color3.fromRGB(0, 150, 255)
                     hl.OutlineColor = Color3.fromRGB(255, 255, 255)
-                    hl.FillTransparency = 0.4
-                    monsterHighlights[obj] = hl
+                    hl.FillTransparency = 0.5
+                    
+                    local bb = Instance.new("BillboardGui")
+                    bb.Parent = ScreenGui
+                    bb.Adornee = pPart
+                    bb.Size = UDim2.new(0, 150, 0, 30)
+                    bb.AlwaysOnTop = true
+
+                    local lbl = Instance.new("TextLabel")
+                    lbl.Parent = bb
+                    lbl.Size = UDim2.new(1, 0, 1, 0)
+                    lbl.BackgroundTransparency = 1
+                    lbl.TextSize = 12
+                    lbl.Font = Enum.Font.GothamBold
+                    lbl.TextColor3 = Color3.fromRGB(0, 180, 255)
+
+                    playersData[p] = {Highlight = hl, Billboard = bb, Label = lbl}
+                end
+
+                if playersData[p] and playersData[p].Label then
+                    playersData[p].Label.Text = p.Name .. " " .. dist .. "m"
                 end
             end
         end
     end
 end)
 
--- [2] ESP Items (Чистый фильтр без дверей и автоматов)
+-- ==================== ITEMS ESP SECTION ====================
+CreateSection("ITEMS ESP")
+
 local itemsESP = false
 local itemFolder = Instance.new("Folder", ScreenGui)
 itemFolder.Name = "ItemESPFolder"
 
-local blacklist = {"door", "button", "buttons", "handle", "main", "prompt", "vending", "machine", "wall", "part"}
+local translations = {
+    ["escoba"] = "Broom", ["camara"] = "Camera", ["vendas"] = "Bandages",
+    ["llave"] = "Key", ["linterna"] = "Flashlight", ["cinta"] = "Tape",
+    ["bateria"] = "Battery", ["baterias"] = "Batteries", ["paint"] = "Paint Bucket",
+    ["book"] = "Book", ["radio"] = "Radio"
+}
+
+local blacklist = {"door", "button", "buttons", "handle", "main", "prompt", "vending", "machine", "wall", "part", "switch", "light", "lever", "lamp"}
+
 local function isBlacklisted(name)
     local n = name:lower()
-    for _, b in pairs(blacklist) do
-        if n == b then return true end
-    end
+    for _, b in pairs(blacklist) do if string.find(n, b) then return true end end
     return false
+end
+
+local function getCleanName(name)
+    local n = name:lower()
+    for espName, engName in pairs(translations) do if string.find(n, espName) then return engName end end
+    return name
 end
 
 CreateToggle("ESP Items", function(val)
@@ -284,94 +457,59 @@ CreateToggle("ESP Items", function(val)
 end)
 
 task.spawn(function()
-    while task.wait(0.5) do
+    while true do
         if itemsESP then
             itemFolder:ClearAllChildren()
-            for _, obj in pairs(Workspace:GetDescendants()) do
-                if obj:IsA("ClickDetector") or obj:IsA("ProximityPrompt") or obj:IsA("Tool") then
-                    local inPlayer = false
-                    for _, p in pairs(Players:GetPlayers()) do
-                        if p.Character and obj:IsDescendantOf(p.Character) then inPlayer = true break end
+            if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local myPos = LocalPlayer.Character.HumanoidRootPart.Position
+                for _, obj in pairs(Workspace:GetDescendants()) do
+                    local isItem = false
+                    local targetPart = nil
+                    local itemName = ""
+
+                    if obj:IsA("ClickDetector") or obj:IsA("ProximityPrompt") then
+                        if not (obj:IsA("ProximityPrompt") and not obj.Enabled) then
+                            local parent = obj.Parent
+                            if parent and not isBlacklisted(parent.Name) then
+                                targetPart = parent:IsA("BasePart") and parent or parent:FindFirstChildOfClass("BasePart")
+                                itemName = parent.Name
+                                isItem = true
+                            end
+                        end
+                    elseif obj:IsA("Tool") and obj:IsDescendantOf(Workspace) then
+                        if not isBlacklisted(obj.Name) then
+                            targetPart = obj:FindFirstChild("Handle") or obj:FindFirstChildOfClass("BasePart")
+                            itemName = obj.Name
+                            isItem = true
+                        end
                     end
 
-                    if not inPlayer then
-                        local parent = obj.Parent
-                        local targetPart = parent:IsA("BasePart") and parent or parent:FindFirstChildOfClass("BasePart")
-                        
-                        if targetPart then
-                            local itemName = parent.Name
-                            if isBlacklisted(itemName) and parent.Parent then itemName = parent.Parent.Name end
+                    if isItem and targetPart and targetPart:IsDescendantOf(Workspace) then
+                        local dist = (myPos - targetPart.Position).Magnitude
+                        if dist <= 250 then
+                            local inPlayer = false
+                            for _, p in pairs(Players:GetPlayers()) do
+                                if p.Character and targetPart:IsDescendantOf(p.Character) then inPlayer = true break end
+                                if p:FindFirstChild("Backpack") and targetPart:IsDescendantOf(p.Backpack) then inPlayer = true break end
+                            end
 
-                            if not isBlacklisted(itemName) and not itemName:lower().find(itemName, "door") then
+                            if not inPlayer and targetPart.Transparency < 0.9 then
+                                local translatedName = getCleanName(itemName)
+                                local parentObj = targetPart.Parent
+
+                                local highlight = Instance.new("Highlight")
+                                highlight.Parent = itemFolder
+                                highlight.Adornee = parentObj:IsA("Model") and parentObj or targetPart
+                                highlight.FillColor = Color3.fromRGB(0, 255, 140)
+                                highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
+                                highlight.FillTransparency = 0.5
+
                                 local billboard = Instance.new("BillboardGui")
                                 billboard.Parent = itemFolder
                                 billboard.Adornee = targetPart
-                                billboard.Size = UDim2.new(0, 100, 0, 30)
+                                billboard.Size = UDim2.new(0, 120, 0, 30)
                                 billboard.AlwaysOnTop = true
 
                                 local label = Instance.new("TextLabel")
                                 label.Parent = billboard
-                                label.Size = UDim2.new(1, 0, 1, 0)
-                                label.BackgroundTransparency = 1
-                                label.Text = "[ " .. itemName .. " ]"
-                                label.TextColor3 = Color3.fromRGB(0, 255, 140)
-                                label.TextSize = 12
-                                label.Font = Enum.Font.GothamBold
-                            end
-                        end
-                    end
-                end
-            end
-        end
-    end
-end)
-
--- [3] Fullbright / No Fog
-local fullbright = false
-local defBright = Lighting.Brightness
-local defClock = Lighting.ClockTime
-local defFog = Lighting.FogEnd
-local defShadows = Lighting.GlobalShadows
-
-CreateToggle("Fullbright / No Fog", function(val)
-    fullbright = val
-    if not fullbright then
-        Lighting.Brightness = defBright
-        Lighting.ClockTime = defClock
-        Lighting.FogEnd = defFog
-        Lighting.GlobalShadows = defShadows
-    end
-end)
-
-RunService.RenderStepped:Connect(function()
-    if fullbright then
-        Lighting.Brightness = 2
-        Lighting.ClockTime = 14
-        Lighting.FogEnd = 100000
-        Lighting.GlobalShadows = false
-        Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
-        for _, v in pairs(Lighting:GetChildren()) do
-            if v:IsA("Atmosphere") or v:IsA("PostEffect") or v:IsA("BlurEffect") then v.Enabled = false end
-        end
-    end
-end)
-
--- [4] Infinite Stamina
-CreateToggle("Infinite Stamina", function(val)
-    if val then
-        task.spawn(function()
-            pcall(function() loadstring(game:HttpGet("https://rawscripts.net/raw/The-Ayuwoki-Field-Inf-stamina-72918"))() end)
-        end)
-    end
-end)
-
--- [5] Speed Boost
-CreateToggle("Speed Boost", function(val)
-    if val then
-        task.spawn(function()
-            pcall(function() loadstring(game:HttpGet("https://rawscripts.net/raw/The-Ayuwoki-Field-Inf-speed-boost-138295"))() end)
-        end)
-    end
-end)
-
-print("Medrit Hub v2.0 — Elite Design Loaded!")
+               
