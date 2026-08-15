@@ -1,517 +1,445 @@
---[[
-    Project: Medrit Hub Elite (Secure Edition)
-    Features: Key System, Rainbow Glow, ESP, Auto TP, Noclip, Fast Pickup, Fullbright, Sky Platform, Infinite Jump, Anti-Slow.
-]]
-
+-- ==========================================
+--    MEDRIT MEGA HUB [ULTIMATE EDITION V12]
+-- ==========================================
 local CoreGui = game:GetService("CoreGui")
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
 local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
-local TweenService = game:GetService("TweenService")
+local UserInputService = game:GetService("UserInputService")
 
 local LocalPlayer = Players.LocalPlayer
-local CORRECT_KEY = "MedritCool920"
+local Camera = Workspace.CurrentCamera
 
-if CoreGui:FindFirstChild("MedritHubElite") then
-    CoreGui.MedritHubElite:Destroy()
-end
+if CoreGui:FindFirstChild("MedritKeySystem") then CoreGui.MedritKeySystem:Destroy() end
+if CoreGui:FindFirstChild("MedritUltraHub") then CoreGui.MedritUltraHub:Destroy() end
 
-local ScreenGui = Instance.new("ScreenGui")
-ScreenGui.Name = "MedritHubElite"
-ScreenGui.Parent = CoreGui
-ScreenGui.ResetOnSpawn = false
+local CorrectKey = "MedritCool920"
 
--- ==================== KEY SYSTEM GUI ====================
-local KeyFrame = Instance.new("Frame")
-KeyFrame.Name = "KeyFrame"
-KeyFrame.Parent = ScreenGui
-KeyFrame.Position = UDim2.new(0.5, -160, 0.5, -110)
-KeyFrame.Size = UDim2.new(0, 320, 0, 220)
-KeyFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 15)
-KeyFrame.BorderSizePixel = 0
+-- ================= KEY SYSTEM =================
+local KeyGui = Instance.new("ScreenGui")
+KeyGui.Name = "MedritKeySystem"
+KeyGui.ResetOnSpawn = false
+KeyGui.Parent = CoreGui
+
+local KeyFrame = Instance.new("Frame", KeyGui)
+KeyFrame.Position = UDim2.new(0.5, -120, 0.5, -100)
+KeyFrame.Size = UDim2.new(0, 240, 0, 200)
+KeyFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
 KeyFrame.Active = true
+KeyFrame.Draggable = true
+Instance.new("UICorner", KeyFrame).CornerRadius = UDim.new(0, 8)
 
-local KeyCorner = Instance.new("UICorner")
-KeyCorner.CornerRadius = UDim.new(0, 12)
-KeyCorner.Parent = KeyFrame
+local KStroke = Instance.new("UIStroke", KeyFrame)
+KStroke.Color = Color3.fromRGB(50, 50, 50)
+KStroke.Thickness = 1.5
 
-local KeyStroke = Instance.new("UIStroke")
-KeyStroke.Color = Color3.fromRGB(220, 30, 30)
-KeyStroke.Thickness = 2
-KeyStroke.Parent = KeyFrame
-
-local KeyTopBar = Instance.new("Frame")
-KeyTopBar.Parent = KeyFrame
-KeyTopBar.Size = UDim2.new(1, 0, 0, 35)
-KeyTopBar.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
-KeyTopBar.BorderSizePixel = 0
-
-local KeyTopCorner = Instance.new("UICorner")
-KeyTopCorner.CornerRadius = UDim.new(0, 12)
-KeyTopCorner.Parent = KeyTopBar
-
-local KeyTitle = Instance.new("TextLabel")
-KeyTitle.Parent = KeyTopBar
-KeyTitle.Position = UDim2.new(0, 15, 0, 0)
-KeyTitle.Size = UDim2.new(1, -30, 1, 0)
+local KeyTitle = Instance.new("TextLabel", KeyFrame)
+KeyTitle.Size = UDim2.new(1, 0, 0, 35)
 KeyTitle.BackgroundTransparency = 1
-KeyTitle.Text = "MEDRIT HUB — KEY SYSTEM"
-KeyTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyTitle.TextSize = 13
+KeyTitle.Text = "MEDRIT LOGIN [V12]"
+KeyTitle.TextColor3 = Color3.fromRGB(240, 240, 240)
 KeyTitle.Font = Enum.Font.GothamBold
-KeyTitle.TextXAlignment = Enum.TextXAlignment.Left
+KeyTitle.TextSize = 11
 
-local KeyDesc = Instance.new("TextLabel")
-KeyDesc.Parent = KeyFrame
-KeyDesc.Position = UDim2.new(0, 20, 0, 48)
-KeyDesc.Size = UDim2.new(1, -40, 0, 30)
-KeyDesc.BackgroundTransparency = 1
-KeyDesc.Text = "Введите ключ доступа, чтобы разблокировать хаб:"
-KeyDesc.TextColor3 = Color3.fromRGB(170, 170, 170)
-KeyDesc.TextSize = 11
-KeyDesc.Font = Enum.Font.GothamMedium
-KeyDesc.TextXAlignment = Enum.TextXAlignment.Left
-
-local KeyBox = Instance.new("TextBox")
-KeyBox.Parent = KeyFrame
-KeyBox.Position = UDim2.new(0, 20, 0, 88)
-KeyBox.Size = UDim2.new(1, -40, 0, 40)
-KeyBox.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
-KeyBox.PlaceholderText = "Введи ключ сюда..."
+local KeyBox = Instance.new("TextBox", KeyFrame)
+KeyBox.Position = UDim2.new(0.1, 0, 0, 40)
+KeyBox.Size = UDim2.new(0.8, 0, 0, 32)
+KeyBox.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+KeyBox.PlaceholderText = "Enter key..."
 KeyBox.Text = ""
-KeyBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyBox.PlaceholderColor3 = Color3.fromRGB(90, 90, 100)
-KeyBox.TextSize = 13
-KeyBox.Font = Enum.Font.GothamBold
-KeyBox.ClearTextOnFocus = false
+KeyBox.TextColor3 = Color3.fromRGB(240, 240, 240)
+KeyBox.PlaceholderColor3 = Color3.fromRGB(100, 100, 100)
+KeyBox.Font = Enum.Font.GothamMedium
+KeyBox.TextSize = 10
+Instance.new("UICorner", KeyBox).CornerRadius = UDim.new(0, 6)
+local BoxStroke = Instance.new("UIStroke", KeyBox)
+BoxStroke.Color = Color3.fromRGB(40, 40, 40)
+BoxStroke.Thickness = 1
 
-local KB際のCorner = Instance.new("UICorner")
-KB際のCorner.CornerRadius = UDim.new(0, 8)
-KB際のCorner.Parent = KeyBox
+local GetKeyBtn = Instance.new("TextButton", KeyFrame)
+GetKeyBtn.Position = UDim2.new(0.1, 0, 0, 80)
+GetKeyBtn.Size = UDim2.new(0.8, 0, 0, 28)
+GetKeyBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+GetKeyBtn.Text = "GET KEY"
+GetKeyBtn.TextColor3 = Color3.fromRGB(180, 180, 180)
+GetKeyBtn.Font = Enum.Font.GothamBold
+GetKeyBtn.TextSize = 10
+Instance.new("UICorner", GetKeyBtn).CornerRadius = UDim.new(0, 6)
+local GetStroke = Instance.new("UIStroke", GetKeyBtn)
+GetStroke.Color = Color3.fromRGB(40, 40, 40)
+GetStroke.Thickness = 1
 
-local KBStroke = Instance.new("UIStroke")
-KBStroke.Color = Color3.fromRGB(40, 40, 50)
-KBStroke.Thickness = 1.5
-KBStroke.Parent = KeyBox
+GetKeyBtn.MouseButton1Click:Connect(function()
+    if setclipboard then
+        setclipboard("https://link-target.net/8028026/sqCo7LR6bbYq")
+        GetKeyBtn.Text = "COPIED!"
+        task.wait(1.5)
+        GetKeyBtn.Text = "GET KEY"
+    end
+end)
 
-local SubmitBtn = Instance.new("TextButton")
-SubmitBtn.Parent = KeyFrame
-SubmitBtn.Position = UDim2.new(0, 20, 0, 145)
-SubmitBtn.Size = UDim2.new(1, -40, 0, 42)
-SubmitBtn.BackgroundColor3 = Color3.fromRGB(220, 30, 30)
-SubmitBtn.Text = "ПРОВЕРИТЬ КЛЮЧ"
-SubmitBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-SubmitBtn.TextSize = 13
+local SubmitBtn = Instance.new("TextButton", KeyFrame)
+SubmitBtn.Position = UDim2.new(0.1, 0, 0, 116)
+SubmitBtn.Size = UDim2.new(0.8, 0, 0, 32)
+SubmitBtn.BackgroundColor3 = Color3.fromRGB(240, 240, 240)
+SubmitBtn.Text = "SUBMIT"
+SubmitBtn.TextColor3 = Color3.fromRGB(15, 15, 15)
 SubmitBtn.Font = Enum.Font.GothamBold
-SubmitBtn.AutoButtonColor = false
+SubmitBtn.TextSize = 10
+Instance.new("UICorner", SubmitBtn).CornerRadius = UDim.new(0, 6)
 
-local SubCorner = Instance.new("UICorner")
-SubCorner.CornerRadius = UDim.new(0, 8)
-SubCorner.Parent = SubmitBtn
+local ErrorLbl = Instance.new("TextLabel", KeyFrame)
+ErrorLbl.Position = UDim2.new(0, 0, 0, 158)
+ErrorLbl.Size = UDim2.new(1, 0, 0, 30)
+ErrorLbl.BackgroundTransparency = 1
+ErrorLbl.Text = ""
+ErrorLbl.TextColor3 = Color3.fromRGB(255, 80, 80)
+ErrorLbl.Font = Enum.Font.GothamBold
+ErrorLbl.TextSize = 9
 
--- Драг окна ключа
-local kDragging, kDragInput, kDragStart, kStartPos
-KeyTopBar.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        kDragging = true
-        kDragStart = input.Position
-        kStartPos = KeyFrame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then kDragging = false end
-        end)
+SubmitBtn.MouseButton1Click:Connect(function()
+    if KeyBox.Text == CorrectKey then
+        LaunchMainHub()
+    else
+        ErrorLbl.Text = "INVALID KEY!"
+        task.wait(1.5)
+        ErrorLbl.Text = ""
     end
 end)
 
-KeyTopBar.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        kDragInput = input
-    end
-end)
+-- ================= MAIN HUB =================
+function LaunchMainHub()
+    if KeyGui then KeyGui:Destroy() end
 
-UserInputService.InputChanged:Connect(function(input)
-    if input == kDragInput and kDragging then
-        local delta = input.Position - kDragStart
-        KeyFrame.Position = UDim2.new(kStartPos.X.Scale, kStartPos.X.Offset + delta.X, kStartPos.Y.Scale, kStartPos.Y.Offset + delta.Y)
-    end
-end)
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = "MedritUltraHub"
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.Parent = CoreGui
 
--- Логика проверки ключа
-local function StartMainHub()
-    -- Плавное скрытие окна ключа
-    TweenService:Create(KeyFrame, TweenInfo.new(0.4), {Size = UDim2.new(0, 0, 0, 0), Position = KeyFrame.Position + UDim2.new(0, 160, 0, 110)}):Play()
-    task.wait(0.4)
-    KeyFrame:Destroy()
+    local AlertLbl = Instance.new("TextLabel", ScreenGui)
+    AlertLbl.Position = UDim2.new(0.5, -200, 0.15, 0)
+    AlertLbl.Size = UDim2.new(0, 400, 0, 40)
+    AlertLbl.BackgroundTransparency = 1
+    AlertLbl.Text = ""
+    AlertLbl.TextColor3 = Color3.fromRGB(240, 50, 50)
+    AlertLbl.Font = Enum.Font.GothamBold
+    AlertLbl.TextSize = 18
+    AlertLbl.TextStrokeTransparency = 0.3
 
-    -- Главная кнопка открытия/закрытия меню
-    local OpenBtn = Instance.new("TextButton")
-    OpenBtn.Name = "OpenButton"
-    OpenBtn.Parent = ScreenGui
-    OpenBtn.Position = UDim2.new(0.5, -75, 0, 12)
-    OpenBtn.Size = UDim2.new(0, 150, 0, 32)
-    OpenBtn.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
-    OpenBtn.Text = "MEDRIT HUB"
-    OpenBtn.TextColor3 = Color3.fromRGB(255, 60, 60)
-    OpenBtn.TextSize = 13
+    local OpenBtn = Instance.new("TextButton", ScreenGui)
+    OpenBtn.Position = UDim2.new(0.5, -60, 0, 8)
+    OpenBtn.Size = UDim2.new(0, 120, 0, 28)
+    OpenBtn.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
+    OpenBtn.Text = "MEDRIT [V12]"
+    OpenBtn.TextColor3 = Color3.fromRGB(240, 240, 240)
     OpenBtn.Font = Enum.Font.GothamBold
+    OpenBtn.TextSize = 10
+    Instance.new("UICorner", OpenBtn).CornerRadius = UDim.new(0, 6)
+    local OpenStroke = Instance.new("UIStroke", OpenBtn)
+    OpenStroke.Color = Color3.fromRGB(50, 50, 50)
+    OpenStroke.Thickness = 1.2
 
-    local OpenCorner = Instance.new("UICorner")
-    OpenCorner.CornerRadius = UDim.new(0, 8)
-    OpenCorner.Parent = OpenBtn
-
-    local OpenStroke = Instance.new("UIStroke")
-    OpenStroke.Color = Color3.fromRGB(220, 30, 30)
-    OpenStroke.Thickness = 1.5
-    OpenStroke.Parent = OpenBtn
-
-    -- Окно интерфейса
-    local MainFrame = Instance.new("Frame")
-    MainFrame.Name = "MainFrame"
-    MainFrame.Parent = ScreenGui
-    MainFrame.Position = UDim2.new(0.5, -150, 0.5, -220)
-    MainFrame.Size = UDim2.new(0, 300, 0, 440)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(12, 12, 15)
-    MainFrame.BorderSizePixel = 0
+    local MainFrame = Instance.new("Frame", ScreenGui)
+    MainFrame.Position = UDim2.new(0.5, -125, 0.5, -180)
+    MainFrame.Size = UDim2.new(0, 250, 0, 380)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
     MainFrame.Active = true
-    MainFrame.ClipsDescendants = true
+    MainFrame.Draggable = true
+    Instance.new("UICorner", MainFrame).CornerRadius = UDim.new(0, 8)
+    local MainStroke = Instance.new("UIStroke", MainFrame)
+    MainStroke.Color = Color3.fromRGB(45, 45, 45)
+    MainStroke.Thickness = 1.5
 
-    local MainCorner = Instance.new("UICorner")
-    MainCorner.CornerRadius = UDim.new(0, 12)
-    MainCorner.Parent = MainFrame
+    local TopBar = Instance.new("Frame", MainFrame)
+    TopBar.Size = UDim2.new(1, 0, 0, 30)
+    TopBar.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    Instance.new("UICorner", TopBar).CornerRadius = UDim.new(0, 8)
 
-    local MainStroke = Instance.new("UIStroke")
-    MainStroke.Color = Color3.fromRGB(220, 30, 30)
-    MainStroke.Thickness = 2
-    MainStroke.Parent = MainFrame
-
-    local TopBar = Instance.new("Frame")
-    TopBar.Parent = MainFrame
-    TopBar.Size = UDim2.new(1, 0, 0, 40)
-    TopBar.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
-    TopBar.BorderSizePixel = 0
-
-    local TopCorner = Instance.new("UICorner")
-    TopCorner.CornerRadius = UDim.new(0, 12)
-    TopCorner.Parent = TopBar
-
-    local Title = Instance.new("TextLabel")
-    Title.Parent = TopBar
-    Title.Position = UDim2.new(0, 15, 0, 0)
-    Title.Size = UDim2.new(1, -50, 1, 0)
+    local Title = Instance.new("TextLabel", TopBar)
+    Title.Position = UDim2.new(0, 10, 0, 0)
+    Title.Size = UDim2.new(1, -20, 1, 0)
     Title.BackgroundTransparency = 1
-    Title.Text = "MEDRIT HUB ULTIMATE"
-    Title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    Title.TextSize = 14
+    Title.Text = "MEDRIT HUB [V12]"
+    Title.TextColor3 = Color3.fromRGB(240, 240, 240)
     Title.Font = Enum.Font.GothamBold
+    Title.TextSize = 10
     Title.TextXAlignment = Enum.TextXAlignment.Left
 
-    local CloseBtn = Instance.new("TextButton")
-    CloseBtn.Parent = TopBar
-    CloseBtn.Position = UDim2.new(1, -35, 0.5, -12)
-    CloseBtn.Size = UDim2.new(0, 24, 0, 24)
-    CloseBtn.BackgroundColor3 = Color3.fromRGB(220, 40, 40)
-    CloseBtn.Text = "X"
-    CloseBtn.TextColor3 = Color3.fromRGB(255, 255, 255)
-    CloseBtn.TextSize = 12
-    CloseBtn.Font = Enum.Font.GothamBold
+    local TabBar = Instance.new("Frame", MainFrame)
+    TabBar.Position = UDim2.new(0, 8, 0, 38)
+    TabBar.Size = UDim2.new(1, -16, 0, 26)
+    TabBar.BackgroundTransparency = 1
 
-    local CloseCorner = Instance.new("UICorner")
-    CloseCorner.CornerRadius = UDim.new(0, 6)
-    CloseCorner.Parent = CloseBtn
+    local TabList = Instance.new("UIListLayout", TabBar)
+    TabList.FillDirection = Enum.FillDirection.Horizontal
+    TabList.Padding = UDim.new(0, 4)
 
-    local Container = Instance.new("ScrollingFrame")
-    Container.Parent = MainFrame
-    Container.Position = UDim2.new(0, 10, 0, 50)
-    Container.Size = UDim2.new(1, -20, 1, -60)
-    Container.BackgroundTransparency = 1
-    Container.BorderSizePixel = 0
-    Container.CanvasSize = UDim2.new(0, 0, 0, 1150)
-    Container.ScrollBarThickness = 3
-    Container.ScrollBarImageColor3 = Color3.fromRGB(200, 30, 30)
+    local Pages = {}
+    local function CreateTab(name)
+        local TabBtn = Instance.new("TextButton", TabBar)
+        TabBtn.Size = UDim2.new(0.32, 0, 1, 0)
+        TabBtn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+        TabBtn.Text = name
+        TabBtn.TextColor3 = Color3.fromRGB(140, 140, 140)
+        TabBtn.Font = Enum.Font.GothamBold
+        TabBtn.TextSize = 9
+        Instance.new("UICorner", TabBtn).CornerRadius = UDim.new(0, 5)
+        local TabStroke = Instance.new("UIStroke", TabBtn)
+        TabStroke.Color = Color3.fromRGB(35, 35, 35)
+        TabStroke.Thickness = 1
 
-    local UIList = Instance.new("UIListLayout")
-    UIList.Parent = Container
-    UIList.SortOrder = Enum.SortOrder.LayoutOrder
-    UIList.Padding = UDim.new(0, 8)
+        local Page = Instance.new("ScrollingFrame", MainFrame)
+        Page.Position = UDim2.new(0, 8, 0, 72)
+        Page.Size = UDim2.new(1, -16, 1, -80)
+        Page.BackgroundTransparency = 1
+        Page.CanvasSize = UDim2.new(0, 0, 0, 380)
+        Page.ScrollBarThickness = 2
+        Page.Visible = false
 
-    -- Драг главного меню
-    local dragging, dragInput, dragStart, startPos
-    TopBar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-            dragging = true
-            dragStart = input.Position
-            startPos = MainFrame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then dragging = false end
-            end)
-        end
-    end)
+        local PList = Instance.new("UIListLayout", Page)
+        PList.Padding = UDim.new(0, 5)
 
-    TopBar.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-            dragInput = input
-        end
-    end)
+        Pages[name] = Page
 
-    UserInputService.InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            local delta = input.Position - dragStart
-            MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
+        TabBtn.MouseButton1Click:Connect(function()
+            for _, p in pairs(Pages) do p.Visible = false end
+            Page.Visible = true
+        end)
 
-    OpenBtn.MouseButton1Click:Connect(function() MainFrame.Visible = not MainFrame.Visible end)
-    CloseBtn.MouseButton1Click:Connect(function() MainFrame.Visible = false end)
-
-    local function CreateSection(titleText)
-        local SecLabel = Instance.new("TextLabel")
-        SecLabel.Parent = Container
-        SecLabel.Size = UDim2.new(1, 0, 0, 25)
-        SecLabel.BackgroundTransparency = 1
-        SecLabel.Text = "  " .. titleText
-        SecLabel.TextColor3 = Color3.fromRGB(255, 60, 60)
-        SecLabel.TextSize = 12
-        SecLabel.Font = Enum.Font.GothamBold
-        SecLabel.TextXAlignment = Enum.TextXAlignment.Left
+        return Page
     end
 
-    local function CreateToggle(name, callback)
+    local Tab1 = CreateTab("Main")
+    local Tab2 = CreateTab("Visuals")
+    local Tab3 = CreateTab("Movement")
+
+    if Pages["Main"] then Pages["Main"].Visible = true end
+
+    OpenBtn.MouseButton1Click:Connect(function() 
+        MainFrame.Visible = not MainFrame.Visible 
+    end)
+
+    local function CreateToggle(parent, name, callback)
         local state = false
-        local ToggleBtn = Instance.new("TextButton")
-        ToggleBtn.Parent = Container
-        ToggleBtn.Size = UDim2.new(1, 0, 0, 38)
-        ToggleBtn.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
-        ToggleBtn.AutoButtonColor = false
-        ToggleBtn.Text = ""
+        local Btn = Instance.new("TextButton", parent)
+        Btn.Size = UDim2.new(1, 0, 0, 30)
+        Btn.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+        Btn.Text = ""
+        Instance.new("UICorner", Btn).CornerRadius = UDim.new(0, 6)
+        local BStroke = Instance.new("UIStroke", Btn)
+        BStroke.Color = Color3.fromRGB(35, 35, 35)
+        BStroke.Thickness = 1
 
-        local TCorner = Instance.new("UICorner")
-        TCorner.CornerRadius = UDim.new(0, 8)
-        TCorner.Parent = ToggleBtn
-
-        local TStroke = Instance.new("UIStroke")
-        TStroke.Color = Color3.fromRGB(40, 40, 50)
-        TStroke.Thickness = 1
-        TStroke.Parent = ToggleBtn
-
-        local Label = Instance.new("TextLabel")
-        Label.Parent = ToggleBtn
-        Label.Position = UDim2.new(0, 12, 0, 0)
-        Label.Size = UDim2.new(1, -60, 1, 0)
+        local Label = Instance.new("TextLabel", Btn)
+        Label.Position = UDim2.new(0, 8, 0, 0)
+        Label.Size = UDim2.new(1, -50, 1, 0)
         Label.BackgroundTransparency = 1
         Label.Text = name
         Label.TextColor3 = Color3.fromRGB(200, 200, 200)
-        Label.TextSize = 12
         Label.Font = Enum.Font.GothamMedium
+        Label.TextSize = 9
         Label.TextXAlignment = Enum.TextXAlignment.Left
 
-        local StatusBadge = Instance.new("Frame")
-        StatusBadge.Parent = ToggleBtn
-        StatusBadge.Position = UDim2.new(1, -50, 0.5, -10)
-        StatusBadge.Size = UDim2.new(0, 38, 0, 20)
-        StatusBadge.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
+        local StatusBadge = Instance.new("Frame", Btn)
+        StatusBadge.Position = UDim2.new(1, -42, 0.5, -8)
+        StatusBadge.Size = UDim2.new(0, 36, 0, 16)
+        StatusBadge.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+        Instance.new("UICorner", StatusBadge).CornerRadius = UDim.new(0, 4)
 
-        local SCorner = Instance.new("UICorner")
-        SCorner.CornerRadius = UDim.new(0, 6)
-        SCorner.Parent = StatusBadge
-
-        local StatusText = Instance.new("TextLabel")
-        StatusText.Parent = StatusBadge
+        local StatusText = Instance.new("TextLabel", StatusBadge)
         StatusText.Size = UDim2.new(1, 0, 1, 0)
         StatusText.BackgroundTransparency = 1
         StatusText.Text = "OFF"
-        StatusText.TextColor3 = Color3.fromRGB(120, 120, 120)
-        StatusText.TextSize = 10
+        StatusText.TextColor3 = Color3.fromRGB(100, 100, 100)
         StatusText.Font = Enum.Font.GothamBold
+        StatusText.TextSize = 8
 
-        ToggleBtn.MouseButton1Click:Connect(function()
+        Btn.MouseButton1Click:Connect(function()
             state = not state
-            local targetColor = state and Color3.fromRGB(220, 30, 30) or Color3.fromRGB(30, 30, 38)
-            local textColor = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(120, 120, 120)
-            local strokeColor = state and Color3.fromRGB(255, 60, 60) or Color3.fromRGB(40, 40, 50)
-
-            TweenService:Create(StatusBadge, TweenInfo.new(0.2), {BackgroundColor3 = targetColor}):Play()
-            TweenService:Create(TStroke, TweenInfo.new(0.2), {Color = strokeColor}):Play()
-            
+            StatusBadge.BackgroundColor3 = state and Color3.fromRGB(240, 240, 240) or Color3.fromRGB(30, 30, 30)
             StatusText.Text = state and "ON" or "OFF"
-            StatusText.TextColor3 = textColor
-            Label.TextColor3 = state and Color3.fromRGB(255, 255, 255) or Color3.fromRGB(200, 200, 200)
-
+            StatusText.TextColor3 = state and Color3.fromRGB(15, 15, 15) or Color3.fromRGB(100, 100, 100)
             callback(state)
         end)
     end
 
-    local function CreateTextBoxInput(name, defaultVal, callback)
-        local FrameBox = Instance.new("Frame")
-        FrameBox.Parent = Container
-        FrameBox.Size = UDim2.new(1, 0, 0, 38)
-        FrameBox.BackgroundColor3 = Color3.fromRGB(18, 18, 22)
+    -- ================= TAB 1 =================
+    local fullbrightConn = nil
+    CreateToggle(Tab1, "Real Fullbright", function(val)
+        if val then
+            fullbrightConn = RunService.RenderStepped:Connect(function()
+                Lighting.GlobalShadows = false
+                Lighting.Brightness = 3
+                Lighting.ClockTime = 14
+                Lighting.OutdoorAmbient = Color3.fromRGB(255, 255, 255)
+                Lighting.Ambient = Color3.fromRGB(255, 255, 255)
+                Lighting.FogEnd = 1000000
+                for _, v in pairs(Lighting:GetChildren()) do
+                    if v:IsA("Atmosphere") or v:IsA("PostEffect") then v.Enabled = false end
+                end
+            end)
+        else
+            if fullbrightConn then
+                fullbrightConn:Disconnect()
+                fullbrightConn = nil
+            end
+            Lighting.GlobalShadows = true
+            Lighting.Brightness = 1
+            Lighting.OutdoorAmbient = Color3.fromRGB(128, 128, 128)
+            Lighting.Ambient = Color3.fromRGB(0, 0, 0)
+            Lighting.FogEnd = 1000
+            for _, v in pairs(Lighting:GetChildren()) do
+                if v:IsA("Atmosphere") or v:IsA("PostEffect") then v.Enabled = true end
+            end
+        end
+    end)
 
-        local FCorner = Instance.new("UICorner")
-        FCorner.CornerRadius = UDim.new(0, 8)
-        FCorner.Parent = FrameBox
+    local skySafePart = nil
+    local savedPlayerPos = nil
+    CreateToggle(Tab1, "Sky Safe (Block in Sky)", function(val)
+        if val then
+            local char = LocalPlayer.Character
+            if char and char:FindFirstChild("HumanoidRootPart") then
+                local root = char.HumanoidRootPart
+                savedPlayerPos = root.CFrame
+                
+                skySafePart = Instance.new("Part", Workspace)
+                skySafePart.Name = "MedritSkyPlatform"
+                skySafePart.Size = Vector3.new(40, 2, 40)
+                skySafePart.Anchored = true
+                skySafePart.CanCollide = true
+                skySafePart.BrickColor = BrickColor.new("Medium stone grey")
+                skySafePart.Material = Enum.Material.SmoothPlastic
+                skySafePart.Position = root.Position + Vector3.new(0, 200, 0)
+                
+                task.wait(0.05)
+                root.CFrame = skySafePart.CFrame + Vector3.new(0, 5, 0)
+                
+                local hum = char:FindFirstChildOfClass("Humanoid")
+                if hum then
+                    hum.PlatformStand = false
+                end
+            end
+        else
+            if skySafePart then
+                local char = LocalPlayer.Character
+                if char and char:FindFirstChild("HumanoidRootPart") and savedPlayerPos then
+                    char.HumanoidRootPart.CFrame = savedPlayerPos + Vector3.new(0, 3, 0)
+                end
+                skySafePart:Destroy()
+                skySafePart = nil
+                savedPlayerPos = nil
+            end
+        end
+    end)
 
-        local FStroke = Instance.new("UIStroke")
-        FStroke.Color = Color3.fromRGB(40, 40, 50)
-        FStroke.Thickness = 1
-        FStroke.Parent = FrameBox
+    -- ================= TAB 2 =================
+    local espFolder = Instance.new("Folder", ScreenGui)
+    local itemEspFolder = Instance.new("Folder", ScreenGui)
+    local espAyu, espPlr, espItems = false, false, false
 
-        local Label = Instance.new("TextLabel")
-        Label.Parent = FrameBox
-        Label.Position = UDim2.new(0, 12, 0, 0)
-        Label.Size = UDim2.new(1, -80, 1, 0)
-        Label.BackgroundTransparency = 1
-        Label.Text = name
-        Label.TextColor3 = Color3.fromRGB(200, 200, 200)
-        Label.TextSize = 12
-        Label.Font = Enum.Font.GothamMedium
-        Label.TextXAlignment = Enum.TextXAlignment.Left
-
-        local TextBox = Instance.new("TextBox")
-        TextBox.Parent = FrameBox
-        TextBox.Position = UDim2.new(1, -70, 0.5, -12)
-        TextBox.Size = UDim2.new(0, 60, 0, 24)
-        TextBox.BackgroundColor3 = Color3.fromRGB(30, 30, 38)
-        TextBox.Text = tostring(defaultVal)
-        TextBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-        TextBox.TextSize = 12
-        TextBox.Font = Enum.Font.GothamBold
-        TextBox.ClearTextOnFocus = false
-
-        local TBCorner = Instance.new("UICorner")
-        TBCorner.CornerRadius = UDim.new(0, 6)
-        TBCorner.Parent = TextBox
-
-        TextBox.FocusLost:Connect(function()
-            local num = tonumber(TextBox.Text)
-            if num then callback(num) else TextBox.Text = tostring(defaultVal) end
-        end)
-    end
-
-    -- ==================== RAINBOW GLOW LOGIC ====================
-    local rainbowGlow = false
+    CreateToggle(Tab2, "ESP Monsters", function(val) espAyu = val; espFolder:ClearAllChildren() end)
+    CreateToggle(Tab2, "ESP Players", function(val) espPlr = val; espFolder:ClearAllChildren() end)
+    CreateToggle(Tab2, "ESP Items", function(val) espItems = val; itemEspFolder:ClearAllChildren() end)
 
     RunService.RenderStepped:Connect(function()
-        if rainbowGlow then
-            local hue = (tick() % 5) / 5
-            local rainbowColor = Color3.fromHSV(hue, 1, 1)
+        espFolder:ClearAllChildren()
+        
+        local ayuClose = false
+        if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+            local myRoot = LocalPlayer.Character.HumanoidRootPart
+            local myPos = myRoot.Position
             
-            MainStroke.Color = rainbowColor
-            OpenStroke.Color = rainbowColor
-            OpenBtn.TextColor3 = rainbowColor
-        end
-    end)
-
-    -- ==================== ESP AND TRACKING ====================
-    CreateSection("ESP AND TRACKING")
-
-    local ayuwokiESP = false
-    local monsterData = {}
-    local autoTP = false
-    local tpCooldown = false
-
-    CreateToggle("ESP Ayuwoki", function(val)
-        ayuwokiESP = val
-        if not ayuwokiESP then
-            for _, data in pairs(monsterData) do
-                if data.Highlight then data.Highlight:Destroy() end
-                if data.Billboard then data.Billboard:Destroy() end
-            end
-            monsterData = {}
-        end
-    end)
-
-    CreateToggle("Auto TP From Ayuwoki (200 Studs)", function(val) autoTP = val end)
-
-    local playersESP = false
-    local playersData = {}
-
-    CreateToggle("ESP Player", function(val)
-        playersESP = val
-        if not playersESP then
-            for _, data in pairs(playersData) do
-                if data.Highlight then data.Highlight:Destroy() end
-                if data.Billboard then data.Billboard:Destroy() end
-            end
-            playersData = {}
-        end
-    end)
-
-    RunService.RenderStepped:Connect(function()
-        if not LocalPlayer.Character or not LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then return end
-        local myHrp = LocalPlayer.Character.HumanoidRootPart
-        local myPos = myHrp.Position
-
-        for _, obj in pairs(Workspace:GetChildren()) do
-            if obj:FindFirstChildOfClass("Humanoid") and not Players:GetPlayerFromCharacter(obj) then
-                local monsterPart = obj:FindFirstChild("HumanoidRootPart") or obj:FindFirstChildOfClass("BasePart")
-                if monsterPart then
-                    local dist = math.floor((myPos - monsterPart.Position).Magnitude)
-
-                    if autoTP and dist <= 200 and not tpCooldown then
-                        tpCooldown = true
-                        local cam = Workspace.CurrentCamera
-                        local lookVec = cam.CFrame.LookVector
-                        local flatVector = Vector3.new(lookVec.X, 0, lookVec.Z).Unit
-                        
-                        local newPos = myHrp.Position - (flatVector * 180)
-                        myHrp.CFrame = CFrame.new(newPos + Vector3.new(0, 5, 0))
-                        myHrp.AssemblyLinearVelocity = Vector3.new(0, 0, 0)
-                        
-                        task.delay(1.5, function() tpCooldown = false end)
+            for _, obj in pairs(Workspace:GetChildren()) do
+                if obj:FindFirstChildOfClass("Humanoid") and not Players:GetPlayerFromCharacter(obj) then
+                    if obj:FindFirstChild("HumanoidRootPart") then
+                        local dist = (obj.HumanoidRootPart.Position - myPos).Magnitude
+                        if dist < 30 then
+                            ayuClose = true
+                        end
                     end
-
-                    if ayuwokiESP then
-                        if not monsterData[obj] then
-                            local hl = Instance.new("Highlight")
-                            hl.Parent = ScreenGui
-                            hl.Adornee = obj
-                            hl.FillTransparency = 0.4
-                            
-                            local bb = Instance.new("BillboardGui")
-                            bb.Parent = ScreenGui
-                            bb.Adornee = monsterPart
-                            bb.Size = UDim2.new(0, 180, 0, 40)
-                            bb.AlwaysOnTop = true
-
-                            local lbl = Instance.new("TextLabel")
-                            lbl.Parent = bb
-                            lbl.Size = UDim2.new(1, 0, 1, 0)
-                            lbl.BackgroundTransparency = 1
-                            lbl.TextSize = 13
-                            lbl.Font = Enum.Font.GothamBold
-
-                            monsterData[obj] = {Highlight = hl, Billboard = bb, Label = lbl, LastDist = dist}
-                        end
-
-                        local data = monsterData[obj]
-                        local isDangerZone = (dist <= 60)
-
-                        if isDangerZone then
-                            data.Highlight.FillColor = Color3.fromRGB(255, 0, 60)
-                            data.Highlight.OutlineColor = Color3.fromRGB(255, 230, 0)
-                            data.Label.Text = "DANGER! " .. dist .. "m"
-                            data.Label.TextColor3 = Color3.fromRGB(255, 40, 40)
-                        else
-                            data.Highlight.FillColor = Color3.fromRGB(255, 0, 0)
-                            data.Highlight.OutlineColor = Color3.fromRGB(255, 255, 255)
-                            data.Label.Text = "Ayuwoki " .. dist .. "m"
-                            data.Label.TextColor3 = Color3.fromRGB(255, 170, 0)
-                        end
-                        data.LastDist = dist
+                    if espAyu then
+                        local hl = Instance.new("Highlight", espFolder)
+                        hl.Adornee = obj
+                        hl.FillColor = Color3.fromRGB(240, 50, 50)
                     end
                 end
             end
         end
 
-        if playersESP then
-            for _, p in pairs(Players:GetPlayers()) do
-                if p ~= LocalPlayer and p.Character and p.Character:FindFirstChild("HumanoidRootPart") then
-                    local pChar = p.Character
-                    local pPart = pChar.HumanoidRootPart
-                    local dist = math.floor((myPos - pPart.Position).Magnitude)
+        AlertLbl.Text = ayuClose and "⚠️ Ayuwoki is approaching you! ⚠️" or ""
 
-                    if not playersData[p] then
-                        local hl = Instance.new("Highlight")
-                        hl.Parent = ScreenGui
-                        hl.Adorne
+        if espPlr then
+            for _, p in pairs(Players:GetPlayers()) do
+                if p ~= LocalPlayer and p.Character then
+                    local hl = Instance.new("Highlight", espFolder)
+                    hl.Adornee = p.Character
+                    hl.FillColor = Color3.fromRGB(50, 150, 240)
+                end
+            end
+        end
+    end)
+
+    task.spawn(function()
+        while task.wait(0.2) do
+            itemEspFolder:ClearAllChildren()
+            if espItems and LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local myPos = LocalPlayer.Character.HumanoidRootPart.Position
+                
+                for _, obj in pairs(Workspace:GetDescendants()) do
+                    local target = nil
+                    
+                    if obj:IsA("ProximityPrompt") then
+                        local parent = obj.Parent
+                        if parent then
+                            target = parent
+                        end
+                    end
+                    
+                    if target then
+                        if not target:IsDescendantOf(LocalPlayer.Character) and not target:IsDescendantOf(LocalPlayer.Backpack) then
+                            local mainPart = target:IsA("BasePart") and target or target:FindFirstChildOfClass("BasePart") or target.PrimaryPart
+                            
+                            if mainPart and mainPart.Parent then
+                                local dist = math.floor((mainPart.Position - myPos).Magnitude)
+                                if dist < 300 then
+                                    local hl = Instance.new("Highlight", itemEspFolder)
+                                    hl.Adornee = target
+                                    hl.FillColor = Color3.fromRGB(50, 240, 100)
+                                    hl.OutlineColor = Color3.fromRGB(240, 240, 240)
+                                end
+                            end
+                        end
+                    end
+                end
+            end
+        end
+    end)
+
+    -- ================= TAB 3 =================
+    CreateToggle(Tab3, "Infinite Stamina", function(val)
+        if val then
+            pcall(function()
+                loadstring(game:HttpGet("https://rawscripts.net/raw/The-Ayuwoki-Field-Inf-stamina-72918"))()
+            end)
+        end
+    end)
+
+    CreateToggle(Tab3, "Noclip", function(val)
+        if val then
+            getgenv().MedritNoclip = RunService.Stepped:Connect(function()
+                if LocalPlayer.Character then
+                    for _, part in pairs(LocalPlayer.Character:GetDescendants()) do
+                        if part:IsA("BasePart") then part.CanCollide = false end
+                    end
+                end
+            end)
+        else
+            if getgenv().MedritNoclip then
+                getgenv().MedritNoclip:Disconnect()
+                getgenv().MedritNoclip = nil
+            end
+        end
+    end)
+end
